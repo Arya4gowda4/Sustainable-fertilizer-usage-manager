@@ -2,3 +2,10 @@
 *.db
 __pycache__/
 .venv/
+*.keras
+*.h5
+*.db
+*.pkl
+*.egg-info/
+__pycache__/
+.DS_Store
