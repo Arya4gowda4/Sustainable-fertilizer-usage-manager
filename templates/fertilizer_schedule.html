@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Fertilizer Plan</title>
+  <style>
+    body { background:#f6fcff; font-family: 'Segoe UI', Arial, sans-serif; }
+    .main-container { max-width:900px; margin:35px auto; padding:32px 16px; background:#fff; border-radius:18px; box-shadow:0 7px 40px #99beee33;}
+    .page-title { text-align:center; font-size:2em; color:#1977e7; font-weight:700; margin-bottom:10px;}
+    .fert-form { display:flex; flex-direction:column;align-items:center;margin-bottom:20px; }
+    select { font-size:1.13em; border-radius:10px; padding:11px 35px; margin:8px 0;}
+    button { font-size:1.19em; padding:12px 34px; background: linear-gradient(90deg, #5ec3fa 20%, #35e79e 80%); color:#1a3730;font-weight:600; border-radius:10px; border:none;margin-top:7px;}
+    button:hover { background: linear-gradient(90deg, #35e79e 20%, #5ec3fa 80%);}
+    .plan-table { width:97%;margin:20px auto 0 auto;border-collapse:collapse;background:#f7fcf8;}
+    .plan-table th, .plan-table td { border:1px solid #cee6ef; padding:14px 10px; text-align:left; }
+    .plan-table th { background: #e6f5fd; font-size: 1.13em; color:#085ca4;}
+    .month-col { font-weight:600;color:#23ab55;}
+    .fert-key { font-weight:500;color:#155e75; }
+    .fert-val { color:#243b44; }
+    .addtl-row { color:#9e771d; font-style:italic; background:#fdfde4;}
+    .back-btn { font-size:1.1em; color:#2584b9; background:#ddeefc; border:none; border-radius:8px; text-decoration:none; padding:9px 26px 9px 16px; box-shadow:0 1px 8px #65c8f222; margin-bottom:17px; display:inline-block;}
+    .back-btn:hover { background:#c0e6fa; color:#16518e;}
+  </style>
+</head>
+<body>
+  <div class="main-container">
+    <a href="{{ url_for('welcome') }}" class="back-btn">← Back to Home</a>
+    <div class="page-title">Crop Fertilizer Schedule</div>
+    <form method="post" class="fert-form">
+      <label for="crop">Select Crop:</label>
+      <select name="crop" id="crop" required>
+        <option value="" disabled {% if not selected_crop %}selected{% endif %}>Select Crop</option>
+        {% for crop in crops %}
+          <option value="{{ crop }}" {% if selected_crop==crop %}selected{% endif %}>{{ crop|capitalize }}</option>
+        {% endfor %}
+      </select>
+      <button type="submit">Show Plan</button>
+    </form>
+    {% if schedule %}
+      <table class="plan-table">
+        <tr>
+          <th>Month</th>
+          <th>Fertilizer Plan</th>
+        </tr>
+        {% for m in months %}
+          {% set plan = schedule.get(m) %}
+          {% if plan %}
+          <tr>
+            <td class="month-col">{{ m }}</td>
+            <td>
+              {% for key, value in plan.items() if key != "additional" %}
+                <span class="fert-key">{{ key }}:</span> <span class="fert-val">{{ value }}</span><br>
+              {% endfor %}
+              {% if plan.additional %}
+                <div class="addtl-row">Notes: {{ plan.additional|join("; ") }}</div>
+              {% endif %}
+            </td>
+          </tr>
+          {% endif %}
+        {% endfor %}
+      </table>
+    {% endif %}
+  </div>
+</body>
+</html>

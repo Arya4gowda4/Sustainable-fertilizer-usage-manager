@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>{{ _("Permissions") }}</title>
+  <style>
+body {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  background: linear-gradient(120deg, #3286e1 0%, #b8f6ea 100%);
+
+}
+.centerbox {
+  width: 90vw; max-width: 480px; margin: auto;
+  text-align: center; padding: 36px 20px 60px 20px;
+  background: #f2f2f2; border-radius: 14px; box-shadow: 0 3px 18px #bbb;
+  position: relative;
+}
+.perm-icon { font-size: 60px; margin-bottom: 20px; color: #007bff; }
+.perm-list { font-size: 1.1rem; list-style: none; padding: 0; margin: 0 0 28px 0; }
+.perm-list li { margin: 10px 0; }
+.next-btn {
+  position: absolute;
+  right: 30px;
+  bottom: 30px;
+  padding: 16px 42px;
+  font-size: 1.2rem;
+  border-radius: 8px;
+  border: none;
+  background: #007bff;
+  color: white;
+  box-shadow: 0 3px 12px #bbb;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.next-btn:hover { background: #0056b3; }
+</style>
+
+</head>
+<body>
+  <div class="centerbox">
+    <div class="perm-icon">{{ _("🔒") }}</div>
+    <h2>{{ _("Allow Permissions") }}</h2>
+    <p>{{ _("This app needs the following permissions to work properly:") }}</p>
+    <ul class="perm-list">
+      <li>{{ _("Access to your") }}<b>{{ _("Device Location") }}</b>{{ _("(for weather & region features)") }}</li>
+      <li>{{ _("Camera (for crop health/disease photo uploads)") }}</li>
+      <li>{{ _("Notifications (for updates & alerts)") }}</li>
+    </ul>
+    <form method="POST">
+      <button type="submit" class="next-btn">{{ _("Next") }}</button>
+    </form>
+  </div>
+</body>
+</html>

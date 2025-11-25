@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>{{ _('Select Language') }}</title>
+  <style>
+    body { min-height: 100vh; display: flex; align-items: center; justify-content: center; margin: 0; background: #f6fafb; }
+    .centerbox {
+      width: 90vw; max-width: 700px; margin: auto;
+      text-align: center; padding: 28px 20px 70px 20px;
+      background: #b9d611; border-radius: 16px; box-shadow: 0 3px 14px #bbb; position: relative;
+    }
+
+
+  body {
+  min-height: 100vh;
+  margin: 0;
+  background: linear-gradient(90deg, #5195e2 0%, #f3ef04 100%);
+}
+
+
+  .main-box {
+  background: linear-gradient(120deg, #fcfcfc 0%, #f3f2f0 100%);
+  border-radius: 29px;
+  box-shadow: 0 6px 32px #dde7ef85;
+  padding: 30px 22px;
+  max-width: 950px;
+  margin: 35px auto;
+}
+
+
+
+
+
+
+
+
+    .lang-grid {
+      display: flex; flex-wrap: wrap; justify-content: center; gap: 32px;
+    }
+    .lang-item {
+      padding: 10px;
+      cursor: pointer;
+      border-radius: 15px;
+      border: 2px solid transparent;
+      transition: box-shadow 0.2s, background 0.2s, border 0.2s;
+      display: flex; flex-direction: column; align-items: center;
+    }
+    .lang-item.selected {
+      background: #e4f0ff;
+      border: 2.5px solid #1985e1;
+      box-shadow: 0 0 0 4px #1985e155;
+    }
+    .lang-item img {
+      width: 96px; height: 96px; object-fit: cover; border-radius: 50%;
+      box-shadow: 0 2px 8px #ccc;
+      margin-bottom: 6px;
+      border: 2px solid #aaa; transition: border 0.2s, box-shadow 0.2s;
+    }
+    .lang-item.selected img {
+      border: 3.5px solid #1985e1;
+      box-shadow: 0 4px 16px #aad;
+    }
+    .next-btn {
+      position: absolute;
+      right: 30px;
+      bottom: 30px;
+      padding: 16px 42px;
+      font-size: 1.2rem;
+      border-radius: 8px;
+      border: none;
+      background: #3086dc;
+      color: white;
+      box-shadow: 0 3px 12px #bbb;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .next-btn:hover { background: #0056b3; }
+    @media (max-width: 700px){
+      .centerbox { padding: 12px 5vw 70px 5vw; }
+      .lang-item img { width: 70px; height: 70px; }
+    }
+    .error-msg {
+      color: #d8000c; font-weight: 500; margin-bottom: 12px;
+    }
+  </style>
+  <script>
+    let selectedLang = "";  // To store selected language
+    function selectLang(langId) {
+      selectedLang = langId;
+      document.getElementById('selected_lang').value = langId;
+      document.querySelectorAll('.lang-item').forEach(item => item.classList.remove('selected'));
+      document.getElementById('lang_' + langId).classList.add('selected');
+    }
+    function validateForm() {
+      if (!selectedLang) {
+        alert('{{ _("Please select a language") }}');
+        return false;
+      }
+      return true;
+    }
+  </script>
+</head>
+<body>
+  <div class="main-box">
+    <h2>{{ _('Select your Language') }}</h2>
+    {% if error %}<div class="error-msg">{{ error }}</div>{% endif %}
+    <form method="POST" onsubmit="return validateForm();">
+      <input type="hidden" id="selected_lang" name="language" value="">
+      <div class="lang-grid">
+  {% for code, name in languages.items() %}
+    <div class="lang-item" id="lang_{{ code }}" onclick="selectLang('{{ code }}')">
+      <img src="{{ url_for('static', filename='language_icons/' + code + '.png') }}" alt="{{ name }}">
+      <span style="font-size:1.07em;">{{ _(name) }}</span>
+    </div>
+  {% endfor %}
+</div>
+
+      <button type="submit" class="next-btn">{{ _('Next') }}</button>
+    </form>
+  </div>
+</body>
+</html>

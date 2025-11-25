@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>{{ _('Yield Calculator') }}</title>
+  <style>
+    body { background:#f7fbfc; font-family:'Segoe UI',Arial,sans-serif;}
+    .centerbox { max-width: 490px; margin: 38px auto; background:#fff; border-radius:14px; box-shadow:0 3px 12px #bbb; padding:30px;}
+    h2 { color:#234a75; font-size:1.3em; margin-bottom:10px;}
+    label { display:block; margin-top:15px; font-weight:500;}
+    input, select { width:98%; padding:7px; font-size:1em; border-radius:6px; border:1.2px solid #aaa; margin-top:6px;}
+    button { margin-top:18px; background:#1266ba; color:#fff; border:none; border-radius:8px; font-size:1.16em; padding:10px 24px;}
+    .results { margin-top:26px; background:#e9ffe4; border-radius:8px; padding:16px 12px;}
+    .errmsg{color:#b32d2d; margin:12px 0;}
+    .home-link {display:block;color:#2075eb;margin-bottom:18px;text-decoration:none;}
+  </style>
+</head>
+<body>
+  <div class="centerbox">
+    <a href="{{ url_for('welcome') }}" class="home-link">← {{ _('Back to Dashboard') }}</a>
+    <h2>{{ _('Yield Calculator') }}</h2>
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}<div class="errmsg">{{ messages[0] }}</div>{% endif %}
+    {% endwith %}
+    <form method="post">
+      <label>{{ _('Crop') }}:</label>
+      <select name="crop" required>
+        <option value="" disabled selected>{{ _('Select crop') }}</option>
+        {% for name in crops %}
+          <option value="{{ name }}">{{ name|capitalize }}</option>
+        {% endfor %}
+      </select>
+      <label>{{ _('Area') }}:</label>
+      <input type="number" min="0.1" step="any" name="area" value="1" required>
+      <label>{{ _('Area Unit') }}:</label>
+      <select name="area_unit">
+        <option value="acre">Acre</option>
+        <option value="ha">Hectare</option>
+      </select>
+      <label>{{ _('Price per kg (₹)') }}</label>
+      <input type="number" min="0" step="any" name="price">
+      <label>{{ _('Input Costs per Acre (₹)') }}</label>
+      <input type="number" min="0" step="any" name="costs">
+      <label>{{ _('Custom Baseline Yield (kg/acre, optional)') }}</label>
+      <input type="number" min="0" step="any" name="baseline" placeholder="Defaults to crop preset">
+      <button type="submit">{{ _('Calculate') }}</button>
+    </form>
+    {% if results %}
+    <div class="results">
+      <b>{{ _('Estimated Marketable Yield') }}</b>: {{ results.calculations.marketable_yield_kg|round(2) }} kg <br>
+      <b>{{ _('Yield per Acre') }}</b>: {{ results.normalized.yield_per_acre_kg|round(2) }} kg/acre<br>
+      <b>{{ _('Estimated Revenue') }}</b>: ₹ {{ results.economics.revenue|round(0) }}<br>
+      <b>{{ _('Estimated Profit') }}</b>: ₹ {{ results.economics.profit|round(0) }}
+    </div>
+    {% endif %}
+    <p style="margin-top:18px;font-size:.91em;color:#456">
+      {{ _('Results are estimates. Adjust parameters above for more accuracy!') }}
+    </p>
+  </div>
+</body>
+</html>

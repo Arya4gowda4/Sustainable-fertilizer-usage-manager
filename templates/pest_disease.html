@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>{{ _('Pest & Disease Details') }}</title>
+  <style>
+    body { background: #f7fbfc; font-family: 'Segoe UI', Arial, sans-serif; }
+    .centerbox { max-width: 800px; margin: 30px auto; background: #fff; padding: 24px 28px 30px 28px; border-radius: 14px; box-shadow: 0 3px 12px #bbb; }
+    h2 { color: #164d33; }
+    .crop-section { margin-bottom: 2.5rem; }
+    .crop-section h3 { color: #1b5a94; margin-bottom: 8px; }
+    ul { margin-top: 4px; }
+    b, .strong-head { color: #205082; }
+    .back-link { margin-bottom: 18px; display: inline-block; color: #2575ec; font-weight: 500; text-decoration: none; }
+    @media (max-width:700px){
+      .centerbox {padding:12px 2vw;}
+      h2 {font-size:1.25rem;}
+      .crop-section h3 {font-size:1.08rem;}
+    }
+  </style>
+</head>
+<body>
+  <div class="centerbox">
+    <a class="back-link" href="{{ url_for('welcome') }}">← {{ _('Back to Dashboard') }}</a>
+    <h2>{{ _('Pest & Disease Information for Your Crops') }}</h2>
+    {% for crop in crops %}
+      <div class="crop-section">
+        <h3>{{ crop.name }}</h3>
+        <span class="strong-head">{{ _('Pests') }}:</span>
+        <ul>
+          {% for pest in pest_disease_info[crop.id]['pests'] %}
+            <li>{{ pest }}</li>
+          {% else %}
+            <li>{{ _('No data available') }}</li>
+          {% endfor %}
+        </ul>
+        <span class="strong-head">{{ _('Diseases') }}:</span>
+        <ul>
+          {% for disease in pest_disease_info[crop.id]['diseases'] %}
+            <li>{{ disease }}</li>
+          {% else %}
+            <li>{{ _('No data available') }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+    {% endfor %}
+  </div>
+</body>
+</html>

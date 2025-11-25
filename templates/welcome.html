@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>{{ _('Farmer App') }}</title>
+  <style>
+    body {
+      margin: 0; background: #f7fbfc;
+      font-family: 'Segoe UI', Arial, sans-serif; min-height: 100vh;
+      display: flex; flex-direction: column; height: 100vh;
+    }
+    .container { display: flex; flex: 1; padding: 30px 16px 50px 16px; }
+    .left-col {
+      flex: 0 0 270px; display: flex; flex-direction: column; gap: 24px;
+    }
+    .weather-box {
+      background: #e2f0fc; border-radius: 14px; padding: 16px; min-height: 90px;
+      margin-bottom: 14px;
+    }
+    .utilities-box {
+      background: #f5f7fa; border-radius: 14px; padding: 16px 10px 16px 22px;
+      display: flex; flex-direction: column; gap: 12px;
+      font-size: 1.1em;
+    }
+    .utilities-box a {
+      text-decoration: none; color: #323c4a; margin: 6px 0; padding: 6px 0 6px 4px;
+      border-radius: 6px; display: flex; align-items: center; gap: 10px;
+      transition: background 0.18s;
+    }
+    .utilities-box a:hover { background: #e2f0fc; }
+    .main-col {
+      flex: 1; margin-left: 28px; display: flex; flex-direction: column;
+      gap: 16px;
+    }
+    .welcome-banner {
+      margin-top: 4px; margin-bottom: 18px; text-align: center;
+    }
+    .welcome-banner h1 {
+      font-size: 2.18rem; font-weight: 600; color: #065085; margin-bottom: 2px;
+    }
+    .current-status {
+      background: #fde2e4; color: #b71c1c;
+      border-radius: 10px; padding: 12px 14px; margin-bottom: 16px;
+      font-weight: 500; font-size: 1.08em;
+      border-left: 6px solid #f44336;
+      text-align: left;
+    }
+    .crop-section { margin-top: 16px; text-align: center; }
+    .crop-section h3 { font-size: 1.3rem; color: #064875; margin-bottom: 10px; }
+    .crop-list { display: flex; flex-wrap: wrap; gap: 32px; justify-content: center; margin-top: 10px; }
+    .crop-card { text-align: center; }
+    .crop-card img { width: 74px; height: 74px; border-radius: 50%; border: 2px solid #99c; object-fit: cover; }
+    .crop-card-name { margin-top: 6px; font-size: 1em; }
+    .model-box {
+      background: #fff; border-radius: 14px; padding: 30px 18px 28px 18px;
+      box-shadow: 0 2px 18px #dce9f388; text-align: center; margin-bottom: 10px;
+    }
+    .tabsbar {
+      width: 100vw; position: fixed; left: 0; bottom: 0;
+      background: #074476; color: white; border-top-left-radius: 18px; border-top-right-radius: 18px;
+      box-shadow: 0 -1px 8px #aad;
+      display: flex; justify-content: space-around; height: 58px;
+      align-items: center; z-index: 999;
+    }
+    .tabsbar a {
+      color: #fff; text-decoration: none; font-weight: 500; font-size: 1.18em;
+      padding: 10px 18px; border-radius: 10px; transition: background 0.18s;
+      display: flex; gap: 4px; align-items: center;
+    }
+    .tabsbar a.active, .tabsbar a:hover { background: #1782d2; }
+    @media (max-width: 900px){
+      .container { flex-direction: column; }
+      .main-col { margin-left: 0; }
+    }
+
+    .disease-result-box {
+  margin: 32px auto 8px auto;
+  padding: 20px 28px 16px 28px;
+  background: #f7ffef;
+  border-radius: 14px;
+  max-width: 600px;
+  box-shadow: 0 1px 7px #bce7be36;
+}
+.disease-label {
+  font-size: 1.18em;
+  margin-bottom: 8px;
+  color: #174139;
+}
+.disease-main {
+  font-size: 1.42em;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+.disease-name {
+  color: #2066d1;
+  letter-spacing: 0.03em;
+}
+.disease-detail {
+  font-size: 1.11em;
+  margin-bottom: 3px;
+  color: #234a17;
+}
+input[type="file"], button, .disease-result-box {
+  font-size: 1.1em;
+}
+input[type="file"] {
+  padding: 12px 10px;
+  border-radius: 10px;
+  font-size: 1.11em;
+}
+button[type="submit"], .upload-btn {
+  padding: 12px 45px;
+  font-size: 1.18em;
+  border-radius: 10px;
+  background: #1968e8;
+  color: #fff;
+  font-weight: bold;
+  border: none;
+  margin-left: 12px;
+}
+button[type="submit"]:hover, .upload-btn:hover {
+  background: #1251ad;
+}
+
+
+
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Left Sidebar -->
+    <div class="left-col">
+      <!-- WEATHER BOX -->
+      <div class="weather-box">
+        <h3 style="margin:0 0 8px 0;">{{ _('Weather') }}</h3>
+        <div>{{ _('Temp: 28°C, Cloudy') }}</div>
+        <div>{{ _('Location: Bengaluru') }}</div>
+      </div>
+      <!-- UTILITIES (Farm Tools) -->
+      <div class="utilities-box">
+  <h4 style="margin:0;">{{ _('Farm Utilities') }}</h4>
+  <a href="{{ url_for('fertilizer') }}"><span>🧪</span>{{ _('Fertilizer Calculator') }}</a>
+  <a href="{{ url_for('pest_disease') }}"><span>🐞</span>{{ _('Pest & Diseases') }}</a>
+  <a href="{{ url_for('cultivation_tips') }}"><span>🌱</span>{{ _('Cultivation Tips') }}</a>
+  <a href="{{ url_for('yield_calc') }}"><span>💹</span>{{ _('Yield & Profit Estimation') }}</a>
+</div>
+
+    </div>
+    <!-- Main Section -->
+    <div class="main-col">
+      <!-- Welcome Banner -->
+      <div class="welcome-banner">
+        <h1>{{ _('Hi %(username)s Welcome to your %(farm_name)s', username=username, farm_name=farm_name) }}</h1>
+      </div>
+      <!-- Current Status Section for weather updates -->
+      <div class="current-status">
+        {% if alert %}🌩️ {{ _('Weather Alert:') }} {{ alert }}{% else %}{{ _('No weather emergency at the moment.') }}{% endif %}
+      </div>
+      <!-- Selected Crops Display -->
+      <div class="crop-section">
+        <h3>{{ _('Your Selected Crops:') }}</h3>
+        <div class="crop-list">
+          {% for crop in crops %}
+          <div class="crop-card">
+            <img src="{{ url_for('static', filename='crop_images/' + crop.img) }}" alt="{{ crop.name }}">
+            <div class="crop-card-name">{{ crop.name }}</div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+      <!-- Model Upload for Crop Disease Detection -->
+      <div class="model-box">
+        <h2>{{ _('Disease Detection') }}</h2>
+        <p>{{ _('Upload an image of your plant’s diseased leaf. The model will analyze and predict the disease.') }}</p>
+        <form action="/predict" method="POST" enctype="multipart/form-data">
+          <input type="file" name="plant_image" required>
+          <button type="submit" style="margin-left:18px; padding:8px 32px; border-radius:8px; background:#2066b1; color:white; border:none;">{{ _('Upload') }}</button>
+        </form>
+       {% if prediction %}
+  <div class="disease-result-box">
+    <div class="disease-label"><b>Disease Prediction:</b></div>
+    <div class="disease-main">
+      <span class="disease-name">{{ prediction.name.replace("_", " ").replace("___", " - ").replace("__", " - ") }}</span>
+    </div>
+    <div class="disease-detail"><b>Cause:</b> {{ prediction.cause }}</div>
+    <div class="disease-detail"><b>Cure:</b> {{ prediction.cure }}</div>
+  </div>
+{% endif %}
+
+      </div>
+    </div>
+  </div>
+  <!-- Tabs at the bottom -->
+  <div class="tabsbar">
+    <a href="{{ url_for('welcome') }}"><span>🏠</span>{{ _('Home') }}</a>
+
+
+    <a href="{{ url_for('fertilizer_schedule') }}"><span>🧪</span> Fertilizer</a>
+
+    <a href="{{ url_for('tasks') }}"><span>📝</span> Tasks</a>
+
+    <a href="{{ url_for('finance') }}"><span>💰</span> Finance</a>
+
+  </div>
+</body>
+</html>

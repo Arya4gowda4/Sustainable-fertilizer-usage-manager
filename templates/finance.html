@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Finance Tracker</title>
+  <style>
+    body { background: #f2faff; font-family: 'Segoe UI', Arial, sans-serif; margin:0; }
+    .finance-container {
+      max-width: 500px; margin: 35px auto;
+      border-radius: 20px; background: #fff;
+      padding: 43px 20px 32px 20px;
+      box-shadow: 0 8px 38px #8ec6ef55;
+    }
+    .title {
+      font-size: 2.2em;
+      font-weight: 680;
+      margin-bottom: 20px;
+      color: #1d6fd7;
+      text-align: center;
+      letter-spacing: 1px;
+    }
+    .back-btn {
+      font-size: 1.1em; color: #237fc9;
+      background: #e1eeff; border: none;
+      border-radius: 9px;
+      text-decoration: none;
+      padding: 9px 30px 9px 16px;
+      margin-bottom: 26px;
+      box-shadow:0 1px 6px #a1d3ff20;
+      font-weight: 510; display:inline-block;
+      transition: background 0.16s;
+    }
+    .back-btn:hover {background:#c6e4ff;color:#085493;}
+    .finance-form, .summary-form {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px; /* vertical spacing */
+      margin-bottom: 19px;
+      margin-top: 0;
+      width: 100%;
+    }
+    .finance-form label, .summary-form label {
+      font-weight: 510;
+      font-size: 1.04em;
+      margin-bottom: 0;
+      width: 95%;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    select, input[type="text"], input[type="number"], input[type="month"]  {
+      font-size: 1.16em;
+      border-radius: 9px;
+      padding: 11px 10px;
+      margin-top: 4px;
+      margin-bottom: 2px;
+      width: 100%;
+      border: 1.5px solid #b8dbfc;
+      background: #f7fcff;
+      box-shadow: 0 1px 6px #8aa7e82b;
+      transition: border 0.14s;
+    }
+    select:focus, input:focus { outline: 2.5px solid #98e8e6;}
+    .btn-add, .btn-summary {
+      border-radius: 10px;
+      font-size: 1.19em;
+      font-weight: 600;
+      margin: 13px 0 4px 0;
+      padding: 13px 0;
+      width: 100%;
+      border: none;
+      box-shadow: 0 4px 13px #84e98036;
+      letter-spacing:.01em;
+      transition: background 0.19s;
+    }
+    .btn-add { background: linear-gradient(90deg, #50d3a5 40%, #198fde 100%); color: #fff;}
+    .btn-add:hover { background: linear-gradient(90deg, #198fde 10%, #50d3a5 90%); }
+    .btn-summary { background: linear-gradient(90deg, #f2d154 30%, #e3b292 85%); color: #3e3727;}
+    .btn-summary:hover { background: linear-gradient(90deg, #e3b292 10%, #f2d154 80%);}
+    .message { color: #bc3210; background: #fff8f0; padding: 8px 13px; font-size: 1.08em; border-radius: 8px; margin-bottom: 10px; text-align:center;}
+    .summary-section {margin-top:18px;}
+    .exp-box { background:#eafbf8;border-radius:13px;padding:17px 22px 12px 24px; margin-bottom:9px; box-shadow:0 1px 9px #65e3f425;}
+    .exp-title { font-weight:700; color:#1097e7; font-size:1.15em;}
+    .exp-item { font-size:1.11em; color:#134b5e;}
+    .exp-amt { color:#1dad7b; font-size:1.1em; font-weight: 600;}
+    .total-box {background:#fffbea;color:#b3870c; padding:13px 30px; font-weight:700; border-radius:11px; font-size:1.16em; text-align:center; margin-top:14px;}
+    @media (max-width: 610px){
+      .finance-container{max-width:98vw; padding:8px;}
+    }
+  </style>
+</head>
+<body>
+  <div class="finance-container">
+    <a href="{{ url_for('welcome') }}" class="back-btn">← Back to Home</a>
+    <div class="title">Farm Budget Tracker</div>
+    {% if message %}
+      <div class="message">{{ message }}</div>
+    {% endif %}
+    <!-- Add Expense Form -->
+    <form method="post" class="finance-form">
+      <input type="hidden" name="action" value="add_expense">
+      <label> Crop:
+        <select name="crop" required>
+          <option value="" disabled selected>Select Crop</option>
+          {% for c in crops %}
+            <option value="{{ c }}" {% if finance_form.crop==c %}selected{% endif %}>{{ c|capitalize }}</option>
+          {% endfor %}
+        </select>
+      </label>
+      <label> Month:
+        <select name="month" required>
+          <option value="" disabled selected>Select Month</option>
+          {% for m in months %}
+            <option value="{{ m }}" {% if finance_form.month==m %}selected{% endif %}>{{ m }}</option>
+          {% endfor %}
+        </select>
+      </label>
+      <label> Title:
+        <input name="exp_title" placeholder="Expense title">
+      </label>
+      <label> Item:
+        <input name="exp_item" required placeholder="What did you spend on?">
+      </label>
+      <label> Amount (₹):
+        <input type="number" step="any" name="exp_amount" required>
+      </label>
+      <button class="btn-add" type="submit">Add Expense</button>
+    </form>
+    <!-- View Summary Form -->
+    <form method="post" class="summary-form">
+      <input type="hidden" name="action" value="show_summary">
+      <label> Crop:
+        <select name="crop" required>
+          <option value="" disabled selected>Select Crop</option>
+          {% for c in crops %}
+            <option value="{{ c }}" {% if finance_form.crop==c %}selected{% endif %}>{{ c|capitalize }}</option>
+          {% endfor %}
+        </select>
+      </label>
+      <div style="display:flex;justify-content:center;gap:18px;width: 100%;">
+        <label>
+          <input type="radio" name="mode" value="month" {% if finance_form.mode=="month" or not finance_form.mode %}checked{% endif %} > Monthly
+        </label>
+        <label>
+          <input type="radio" name="mode" value="year" {% if finance_form.mode=="year" %}checked{% endif %} > Yearly
+        </label>
+      </div>
+      <label> Month (for monthly summary):
+        <select name="month" {% if finance_form.mode!="month" %}disabled{% endif %}>
+          <option value="" disabled selected>Select Month</option>
+          {% for m in months %}
+            <option value="{{ m }}" {% if finance_form.month==m %}selected{% endif %}>{{ m }}</option>
+          {% endfor %}
+        </select>
+      </label>
+      <button class="btn-summary" type="submit">Show Summary</button>
+    </form>
+    <!-- Results -->
+    {% if result_records %}
+      <div class="summary-section">
+        {% for exp in result_records %}
+          <div class="exp-box">
+            <div class="exp-title">{{ exp.title }}</div>
+            <div class="exp-item">{{ exp.item }}</div>
+            <div><span class="exp-amt">₹{{ '%.2f'|format(exp.amount) }}</span>
+              <span style="font-size:.99em;color:#90ae9a;"> — {{ exp.month }}</span>
+            </div>
+          </div>
+        {% endfor %}
+        <div class="total-box">TOTAL: ₹{{ '%.2f'|format(total) }}</div>
+      </div>
+    {% endif %}
+  </div>
+  <script>
+    // Enable/Disable month select for mode
+    document.querySelectorAll('input[name="mode"]').forEach(el=>{
+      el.addEventListener('change', function(){
+        document.querySelectorAll('select[name="month"]').forEach(sel=>{
+          if(this.value=="year") sel.disabled = true;
+          else sel.disabled = false;
+        });
+      });
+    });
+  </script>
+</body>
+</html>

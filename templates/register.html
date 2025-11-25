@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>{{ _('Register') }}</title>
+  <style>
+    html, body { height:100%; margin:0; padding:0;}
+    body {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+      background: #e8f4f6;
+    }
+    .bg-slider {
+      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1;
+      background-size: cover; background-position: center; background-repeat: no-repeat;
+      filter: brightness(0.76);
+      transition: background-image 1.4s cubic-bezier(.42,0,.31,.98);
+      background-color: #dde9ea;
+    }
+    .login-container {
+      position: relative; z-index: 2;
+      background: rgba(255,255,255,0.91);
+      border-radius: 15px;
+      padding: 36px 28px;
+      max-width: 380px;
+      box-shadow: 0 8px 32px #40847225;
+      margin: 64px auto;
+      animation: fadeIn 0.8s ease 0.1s 1 forwards;
+    }
+    @keyframes fadeIn { from{opacity:0;} to{opacity:1;} }
+    input, button { margin-bottom: 14px; width: 96%; padding: 9px 8px; border-radius: 7px; border: 1.2px solid #aaa; font-size: 1em;}
+    .errmsg { color: #d32f2f; margin-bottom: 14px; }
+  </style>
+</head>
+<body>
+  <div class="bg-slider" id="bg-slider"></div>
+  <div class="login-container" id="login-box">
+    <h2>{{ _('Register') }}</h2>
+    <form method="post">
+      <input type="text" name="username" required placeholder="Username">
+      <input type="password" name="password" required placeholder="Password">
+      <input type="text" name="farm_name" required placeholder="Farm Name">
+      <input type="text" name="email_or_mobile" required placeholder="Email or Mobile">
+      <button type="submit">Register</button>
+    </form>
+    <p>
+      <a href="{{ url_for('login') }}">Back to Login</a>
+    </p>
+    {% if msg %}
+      <div class="errmsg">{{ msg }}</div>
+    {% endif %}
+  </div>
+  <script>
+    // BG image/slider logic
+    const bgImages = [
+      "{{ url_for('static', filename='bg/bg1.jpg') }}",
+      "{{ url_for('static', filename='bg/bg2.jpg') }}",
+      "{{ url_for('static', filename='bg/bg3.jpg') }}",
+      "{{ url_for('static', filename='bg/bg4.jpg') }}",
+      "{{ url_for('static', filename='bg/bg5.jpg') }}",
+      "{{ url_for('static', filename='bg/bg6.jpg') }}"
+    ];
+    let curr = 0, bgDiv = document.getElementById("bg-slider"), shown = false;
+
+    function setBg(idx) { bgDiv.style.backgroundImage = "url('" + bgImages[idx] + "')"; }
+    function revealLogin() {
+      if (!shown) { document.getElementById("login-box").style.display = "block"; shown = true; }
+    }
+    const preload = new window.Image();
+    preload.src = bgImages[0];
+    preload.onload = function () { setBg(0); revealLogin(); startSlider(); };
+    preload.onerror = function(){ revealLogin(); }
+    setTimeout(revealLogin, 1200);
+
+    function startSlider() {
+      setInterval(function () {
+        const next = (curr + 1) % bgImages.length;
+        const img = new window.Image();
+        img.src = bgImages[next];
+        img.onload = function () { curr = next; setBg(curr); }
+        img.onerror = function () { curr = next; setBg(curr); }
+      }, 3000);
+    }
+  </script>
+</body>
+</html>

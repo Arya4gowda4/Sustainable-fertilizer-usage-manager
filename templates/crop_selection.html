@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>{{ _('Crop Selection') }}</title>
+  <style>
+    body { min-height: 100vh;
+  margin: 0;
+  background: linear-gradient(90deg, #e3f0ff 0%, #b8efc1 100%);}
+    .centerbox {
+      width: 92vw; max-width: 700px; position: relative; margin: auto;
+      text-align: center; padding: 20px 20px 70px 20px;
+      background: #f9f9f9; border-radius: 16px; box-shadow: 0 3px 14px #bbb;
+    }
+    .crop-grid {
+      display: flex; flex-wrap: wrap; justify-content: center; gap: 26px;
+    }
+    .crop-item {
+      width: 132px; text-align: center;
+      margin-bottom: 6px;
+    }
+    .crop-item input[type="checkbox"] {
+      display: none;
+    }
+    .crop-item label {
+      display: block;
+      padding: 12px 0;
+      cursor: pointer;
+      border-radius: 12px;
+      transition: background 0.2s, box-shadow 0.18s;
+      background: #fff;
+    }
+    .crop-item img {
+      border: 2px solid #ccc;
+      transition: border 0.2s, box-shadow 0.18s;
+      width: 98px; height: 98px; object-fit: cover; border-radius: 50%; margin-bottom: 8px;
+      box-shadow: 0 2px 8px #ccc;
+    }
+    .crop-item input[type="checkbox"]:checked + label {
+      background: #e4f0ff;
+      box-shadow: 0 0 0 4px #1985e1;
+    }
+    .crop-item input[type="checkbox"]:checked + label img {
+      border: 3.5px solid #1985e1;
+      box-shadow: 0 4px 16px #aad;
+    }
+    .crop-item label div {
+      font-size: 1rem; margin-top: 2px;
+    }
+    .next-btn {
+      position: absolute;
+      right: 30px;
+      bottom: 30px;
+      padding: 16px 42px;
+      font-size: 1.2rem;
+      border-radius: 8px;
+      border: none;
+      background: #007bff;
+      color: white;
+      box-shadow: 0 3px 12px #bbb;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .next-btn:hover { background: #0056b3; }
+    .error-msg {
+      color: #d8000c;
+      margin-bottom: 18px;
+      font-weight: 500;
+    }
+  </style>
+  <script>
+    function limitSelection(box) {
+      const maxSelection = 6;
+      const checked = document.querySelectorAll('input[name="crops"]:checked');
+      if (checked.length > maxSelection) {
+        alert('{{ _("Select up to 6 crops only.") }}');
+        box.checked = false;
+      }
+    }
+    function validateForm() {
+      const checked = document.querySelectorAll('input[name="crops"]:checked');
+      if (checked.length < 1) {
+        alert('{{ _("Please select at least 1 crop.") }}');
+        return false;
+      }
+      if (checked.length > 6) {
+        alert('{{ _("Select up to 6 crops only.") }}');
+        return false;
+      }
+      return true;
+    }
+  </script>
+</head>
+<body>
+  <div class="centerbox">
+    <h2>{{ _('Select Your Crops (1–6)') }}</h2>
+    {% if error %}<div class="error-msg">{{ error }}</div>{% endif %}
+    <form method="POST" onsubmit="return validateForm();">
+      <div class="crop-grid">
+        {% for crop in crops %}
+        <div class="crop-item">
+          <input type="checkbox" name="crops" id="crop_{{ crop.id }}" value="{{ crop.id }}" onchange="limitSelection(this)">
+          <label for="crop_{{ crop.id }}">
+            <img src="{{ url_for('static', filename='crop_images/' + crop.img) }}" alt="{{ crop.name }}">
+            <div>{{ _(crop.name) }}</div>
+          </label>
+        </div>
+        {% endfor %}
+      </div>
+      <button type="submit" class="next-btn">{{ _('Next') }}</button>
+    </form>
+  </div>
+</body>
+</html>

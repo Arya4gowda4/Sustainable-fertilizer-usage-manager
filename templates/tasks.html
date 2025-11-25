@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Crop Tasks</title>
+  <style>
+  body {
+    background: linear-gradient(120deg, #f7fcff 0%, #eef9f2 100%);
+    font-family: 'Segoe UI', Arial, sans-serif;
+    margin: 0; padding: 0; min-height: 100vh;
+  }
+  .tasks-main-container {
+    max-width: 1050px;
+    margin: 34px auto 0 auto;
+    background: #fff;
+    border-radius: 18px;
+    box-shadow: 0 7px 40px #9fbede33;
+    padding: 38px 20px 32px 20px;
+  }
+  .tasks-title {
+    font-size: 2.08rem;
+    text-align: center;
+    margin-bottom: 15px;
+    color: #164985;
+    font-weight: bold;
+    letter-spacing: .02em;
+  }
+  .center-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 32px;
+  }
+  .form-selects {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    margin-top: 18px;
+    margin-bottom: 0;
+  }
+  select, button {
+    font-size: 1.22em;
+    border-radius: 11px;
+    padding: 13px 30px;
+    margin-right: 0;
+    margin-left: 0;
+    box-shadow: 0 2px 7px #3482e13a;
+    border: 1.5px solid #c8ddfa;
+    background: #ecf5ff;
+  }
+  select:focus { outline: 3px solid #a0d3e5; }
+  button[type="submit"] {
+    background: linear-gradient(90deg, #50b45e 60%, #29c4ee 100%);
+    color: #fff;
+    font-weight: 600;
+    border: none;
+    box-shadow: 0 4px 10px #6ac35540;
+    min-width: 155px;
+    transition: background 0.18s;
+  }
+  button[type="submit"]:hover {
+    background: linear-gradient(90deg, #29c4ee 10%, #50b45e 100%);
+  }
+  .section-label {
+    font-size: 1.42em;
+    font-weight: 630;
+    margin: 30px 0 14px 0;
+    color: #174890;
+    text-align: left;
+    letter-spacing: .01em;
+  }
+  .taskbox-main {
+    background: #edfcf7;
+    border-radius: 20px;
+    padding: 28px 40px 18px 40px;
+    box-shadow: 0 5px 34px #b2e8c98c;
+    margin-bottom: 22px;
+    font-size: 1.17em;
+    width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .taskbox-next {
+    background: #fffbe7;
+    border-radius: 14px;
+    padding: 17px 27px 14px 27px;
+    box-shadow: 0 2px 12px #ffe2b266;
+    font-size: 1.03em;
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .task-title {
+    font-weight: bold;
+    color: #1977e7;
+    font-size: 1.32em;
+  }
+  .task-priority {
+    display: inline-block;
+    background: #7ef573;
+    color: #167646;
+    border-radius: 7px;
+    font-size: 1em;
+    font-weight: bold;
+    padding: 4px 16px;
+    margin-left: 10px;
+    margin-bottom: 2px;
+    box-shadow: 0 1px 3px #99f59d7d;
+  }
+  .task-section { margin-top: 14px;}
+  .task-why { color: #608423; font-size: 1.12em; font-style: italic; margin-bottom: 10px;}
+  .material-chip { display: inline-block; background: #cbe9f6; color:#134064; padding: 3px 15px; border-radius: 8px; margin: 0 5px 2px 0; }
+  .task-warning { color: #d85711; background: #ffe8c9; border-radius: 8px; padding: 2px 12px; }
+  .step-list { margin-left: 25px; }
+  @media (max-width: 1000px) {
+    .tasks-main-container {max-width:98vw;padding:8px;}
+    .taskbox-main, .taskbox-next {padding:14px 7px; width:99%;}
+  }
+  .back-btn {
+  font-size: 1.08em;
+  color: #3372ae;
+  background: #e6f1fe;
+  padding: 9px 32px 9px 18px;
+  border: none;
+  border-radius: 8px;
+  text-decoration: none;
+  box-shadow: 0 1px 6px #a6caf833;
+  font-weight: 510;
+  margin-right: 18px;
+  transition: background 0.18s;
+}
+.back-btn:hover {
+  background: #c9e3fa;
+  color: #154166;
+}
+
+</style>
+
+</head>
+<body>
+    <a href="{{ url_for('welcome') }}" class="back-btn">← Back to Home</a>
+
+  <div class="tasks-main-container">
+    <div class="tasks-title">Crop Task Planner</div>
+    <form method="post" class="center-form">
+      <div class="form-selects">
+        <label for="crop">Crop:</label>
+        <select name="crop" id="crop" required>
+          <option value="" disabled selected>Select Crop</option>
+          {% for crop in crop_options %}
+            <option value="{{ crop }}" {% if selected_crop==crop %}selected{% endif %}>{{ crop|capitalize }}</option>
+          {% endfor %}
+        </select>
+        <label for="month">Month:</label>
+        <select name="month" id="month" required>
+          <option value="" disabled selected>Select Month</option>
+          {% for m in months %}
+            <option value="{{ m }}" {% if selected_month==m %}selected{% endif %}>{{ m }}</option>
+          {% endfor %}
+        </select>
+        <button type="submit">Show Tasks</button>
+      </div>
+    </form>
+
+    {% if selected_crop and selected_month %}
+      <div class="section-label">Tasks for {{ selected_crop|capitalize }} in <b>{{ selected_month }}</b></div>
+      {% if tasks_this_month %}
+        {% for t in tasks_this_month %}
+          <div class="taskbox-main">
+            <div class="task-title">{{ t.title }}
+              {% if t.priority %}<span class="task-priority">{{ t.priority|capitalize }}</span>{% endif %}
+            </div>
+            <div class="task-section task-why">{{ t.why }}</div>
+            <div class="task-section"><b>Steps:</b>
+              <ol class="step-list">{% for step in t.steps %}<li>{{ step }}</li>{% endfor %}</ol>
+            </div>
+            {% if t.materials_required %}
+              <div class="task-section"><b>Materials:</b>
+                {% for mat in t.materials_required %}<span class="material-chip">{{ mat }}</span>{% endfor %}
+              </div>
+            {% endif %}
+            {% if t.pests_to_check %}
+              <div class="task-section"><b>Pests/Diseases to Check:</b>
+                {{ t.pests_to_check|join(", ") }}
+              </div>
+            {% endif %}
+            {% if t.warnings %}
+              <div class="task-section"><span class="task-warning"><b>Warning:</b> {{ t.warnings|join('; ') }}</span></div>
+            {% endif %}
+          </div>
+        {% endfor %}
+      {% else %}
+        <div class="taskbox-main">No major tasks for this crop in this month.</div>
+      {% endif %}
+      <div class="section-label" style="font-size:1.06em;color:#aaa;margin:14px 0 3px 0;">Next Month Preview ({{ months[(months.index(selected_month)+1) % 12] }})</div>
+      {% if tasks_next_month %}
+        {% for t in tasks_next_month %}
+          <div class="taskbox-next">
+            <b>{{ t.title }}</b> — <span style="color:#21aa55;">{{ t.priority|capitalize }}</span>
+            <div style="font-size:1.01em">{{ t.why }}</div>
+          </div>
+        {% endfor %}
+      {% else %}
+        <div class="taskbox-next">No pre-scheduled task for next month.</div>
+      {% endif %}
+    {% endif %}
+  </div>
+</body>
+
+</html>

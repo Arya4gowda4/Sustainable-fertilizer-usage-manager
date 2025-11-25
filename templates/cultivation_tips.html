@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>{{ _('Cultivation Tips') }}</title>
+  <style>
+    body {background:#f7fbfc;font-family:'Segoe UI',Arial,sans-serif;}
+    .centerbox {
+      max-width:800px;
+      margin:30px auto;
+      background:#fff;
+      padding:24px 28px 30px 28px;
+      border-radius:14px;
+      box-shadow:0 3px 12px #bbb;
+    }
+    h2 {color:#164d33;}
+    .crop-section {margin-bottom:2.2rem;}
+    .crop-section h3 {color:#1b5a94;margin-bottom:8px;}
+    .section-head {
+      font-weight:bold;
+      color:#127b22;
+      display:block;
+      margin-top:8px;
+      margin-bottom:0px;
+      font-size:1.06em;
+    }
+    .tip-body {
+      margin-left:12px;
+      margin-bottom:7px;
+      display:block;
+    }
+    .back-link{margin-bottom:18px;display:inline-block;color:#2575ec;font-weight:500;text-decoration:none;}
+    @media (max-width:700px){
+      .centerbox {padding:12px 2vw;}
+      h2 {font-size:1.2rem;}
+      .crop-section h3 {font-size:1.08rem;}
+    }
+  </style>
+</head>
+<body>
+  <div class="centerbox">
+    <a class="back-link" href="{{ url_for('welcome') }}">← {{ _('Back to Dashboard') }}</a>
+    <h2>{{ _('Cultivation Tips for Your Crops') }}</h2>
+    {% for crop in crops %}
+      <div class="crop-section">
+        <h3>{{ crop.name }}</h3>
+        {% if tips[crop.id] is mapping %}
+          {% for section, tip in tips[crop.id].items() %}
+            <span class="section-head">{{ section }}</span>
+            <span class="tip-body">{{ tip }}</span>
+          {% endfor %}
+        {% else %}
+          <div>{{ tips[crop.id] }}</div>
+        {% endif %}
+      </div>
+    {% endfor %}
+  </div>
+</body>
+</html>

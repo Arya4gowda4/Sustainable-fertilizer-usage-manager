@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>{{ _('Fertilizer Calculator') }}</title>
+  <style>
+    body { background: #f7fbfc; font-family: 'Segoe UI', Arial, sans-serif; }
+    .centerbox { max-width: 490px; margin: 38px auto; background: #fff; border-radius: 14px; box-shadow:0 3px 12px #bbb; padding:30px; }
+    h2 { color: #234a75; font-size: 1.45em; margin-bottom: 16px; }
+    label { display:block; margin-top:16px; font-weight: 500;}
+    input, select { width: 98%; padding:7px; font-size:1em; border-radius:6px; border:1.2px solid #aaa; margin-top:6px; }
+    button { margin-top:18px; background: #1266ba; color:#fff; border:none; border-radius:8px; font-size:1.16em; padding:10px 24px; }
+    .results { margin-top: 26px; background: #e9ffe4; border-radius: 8px; padding: 16px 12px;}
+    .errmsg{color:#b32d2d; margin:12px 0;}
+    .note {margin-top:20px; font-size:0.92em; color:#456;}
+    .home-link { display:block; color:#2075eb; margin-bottom:18px; text-decoration:none;}
+  </style>
+</head>
+<body>
+  <div class="centerbox">
+    <a href="{{ url_for('welcome') }}" class="home-link">← {{ _('Back to Dashboard') }}</a>
+    <h2>{{ _('Fertilizer Calculator') }}</h2>
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}<div class="errmsg">{{ messages[0] }}</div>{% endif %}
+    {% endwith %}
+    <form method="post">
+      <label for="crop">{{ _('Crop') }}:</label>
+      <select name="crop" required>
+        <option value="" disabled selected>{{ _('Select crop') }}</option>
+        {% for name in crops %}
+          <option value="{{ name }}">{{ name|capitalize }}</option>
+        {% endfor %}
+      </select>
+      <label for="area">{{ _('Area (acres)') }}</label>
+      <input type="number" min="0.1" step="any" name="area" required>
+      <label>{{ _('Current Soil N (kg/ha)') }}</label>
+      <input type="number" min="0" step="any" name="soilN" required>
+      <label>{{ _('Current Soil P₂O₅ (kg/ha)') }}</label>
+      <input type="number" min="0" step="any" name="soilP" required>
+      <label>{{ _('Current Soil K₂O (kg/ha)') }}</label>
+      <input type="number" min="0" step="any" name="soilK" required>
+      <button type="submit">{{ _('Calculate') }}</button>
+    </form>
+    {% if results %}
+      <div class="results">
+        <b>{{ _('Recommendation') }}:</b><br>
+        {{ _('For') }} {{ results.crop|capitalize }} ({{ results.area_acre }} {{ _('acre') }}):<br>
+        {{ _('Target (kg/ha)') }}: N={{ results.target_N }} P₂O₅={{ results.target_P2O5 }} K₂O={{ results.target_K2O }}<br>
+        {{ _('Deficit (kg/ha)') }}: N={{ results.need_N_kg_per_ha }} P₂O₅={{ results.need_P2O5_kg_per_ha }} K₂O={{ results.need_K2O_kg_per_ha }}<br><br>
+        {{ _('Apply per ha') }}: {{ _('DAP') }}={{ results.dap_kg_per_ha }} kg, {{ _('Urea') }}={{ results.urea_kg_per_ha }} kg, {{ _('MOP') }}={{ results.mop_kg_per_ha }} kg<br>
+        {{ _('Total for field (in') }} {{ results.area_acre }} {{ _('acre') }}): {{ _('DAP') }}={{ results.dap_total_kg }} kg, {{ _('Urea') }}={{ results.urea_total_kg }} kg, {{ _('MOP') }}={{ results.mop_total_kg }} kg
+      </div>
+    {% endif %}
+    <p class="note">
+      Urea 46% N, DAP 18% N 46% P₂O₅, MOP 60% K₂O. Always confirm with local guidelines.
+    </p>
+  </div>
+</body>
+</html>
