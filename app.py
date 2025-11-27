@@ -24,6 +24,25 @@ app.secret_key = os.environ.get('SECRET_KEY', 'dev-temp-key')
 
 
 
+
+
+
+from download_model import ensure_model
+
+ensure_model()
+
+# then load the model normally, e.g.
+from tensorflow.keras.models import load_model
+model = load_model("models/plant_disease_model_V3.keras")
+
+
+
+
+
+
+
+
+
 # --- SQLAlchemy Setup ---
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
